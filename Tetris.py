@@ -6,6 +6,14 @@ def drawgrid():
   for column in range(0,11):
     pygame.draw.line(screen,"black",(column*w/10,0),(column*w/10,h),5)
 
+def draw_10x14_tetris_array(tetris_array):
+  for y in range(14):
+    for x in range(10):
+      if(tetris_array[y][x]==1):
+        # print(f'x: {w/10*x} y: {h/10*y}')
+        pygame.draw.rect(screen,"orange",pygame.Rect(w/10*x, h/14*y, w/10 ,h/14))
+
+
 pygame.init()
 screen = pygame.display.set_mode((1600,1200),pygame.RESIZABLE)
 pygame.display.set_caption("TETRIS")
@@ -20,7 +28,7 @@ while True:
   
   screen.fill("white")
 
-  #draw checker pattern
+#draw checker pattern
   # for y in range(w//4):
   #   for x in range(h//4):
   #     test_surf = pygame.Surface((15,15))
@@ -31,31 +39,77 @@ while True:
   #     screen.blit(test_surf,(15*x,y*15))
   
   #line grid
-  drawgrid()
+  # drawgrid()
 
   #take 14x10 array --> colors that specific part of the array which is 1 in grid 
-  tetris_array = [[0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,1,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,1,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],
-                  [0,0,0,0,0,0,0,0,0,0],]
-  for row in range(14):
-    for column in range(10):
-      if(tetris_array[row][column]==1):
-        temp_surface = pygame.Surface((15,15))
-        starting_pos = (column*w/row, row*h/column)
-        ending_pos = ((column+1)*w/row, (row+1)*h/column)
-        pygame.draw.rect(screen,"orange",column*w/row, row*h/column, 2 ,2)
+  test_tetris_array = [[0,0,1,0,0,0,0,0,0,0],
+                       [0,0,1,0,0,0,0,0,0,0],
+                       [0,0,1,1,0,0,0,0,0,0],
+                       [0,1,1,1,1,1,1,1,1,1],
+                       [1,1,1,1,1,1,1,1,1,1],
+                       [0,0,0,0,0,0,0,0,0,0],
+                       [0,0,0,1,0,0,0,0,0,0],
+                       [0,0,0,0,1,0,0,0,0,0],
+                       [0,0,0,0,0,1,0,0,0,0],
+                       [0,0,0,0,0,1,0,0,0,0],
+                       [0,0,0,0,0,0,0,0,0,0],
+                       [0,0,0,0,0,0,0,0,0,0],
+                       [0,0,0,0,0,1,0,0,0,0],
+                       [0,0,0,0,0,0,0,0,0,0],
+                       [1,0,0,0,0,0,0,0,0,0],]
+  draw_10x14_tetris_array(test_tetris_array)
+  #example syntaxs
+    # to make a square 
+    # pygame.draw.rect(screen,"orange",pygame.Rect(coordinate x,coordinate y,box x,box y))
+
+  block = pygame.draw.rect(screen,"orange",pygame.Rect(w/10, h/14, w/10 ,h/14))
+  block.y -= 1
+
+  # new_array =         [[0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],
+  #                      [0,0,0,0,0,0,0,0,0,0],]
+  # while(1 in sublist for sublist in new_array):
+  #   for y in range(14):
+  #     for x in range(10):
+  #       if(test_tetris_array[y][x]==1):
+  #         if(y+1 == 14 or test_tetris_array[y+1][x]==2):
+  #           new_array[y][x] = 2
+  #         else:
+  #           new_array[y+1][x] = 1
+  #   test_tetris_array = new_array
+  #   draw_10x14_tetris_array(new_array)
+
+
+
+
+
+
+
+#idea 1
+  #make a second array from the first array looking at the positions of the 1 values and make them go 
+  #1 unit in the y direction ([y+1][x]) and if the 1 is at bottom or touches another 2 make that cell a 2
+  #make the ones fall
+
+
+#idea 2 
+
+  #make the squares an acutal exntity that can colide
+  #how to mkae custom hitboxes are issue for another day
+
+
+
+
 
   
 
@@ -68,6 +122,13 @@ while True:
       exit()
 
 
+#notes:
+  # maybe drawing the array based on the position isnt suitable since 
+  # the game will be jittry and skip[ the interavls of steps it take 
+  # gonna retry with a rectangel object that falss based on its y value
+  # and checking for collsions taht way will resolve my issue ig
+
+  #scratch this 
 
   pygame.display.update()
-  clock.tick(30)
+  clock.tick(60)
