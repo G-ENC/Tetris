@@ -6,12 +6,15 @@ def drawgrid():
   for column in range(0,11):
     pygame.draw.line(screen,"black",(column*w/10,0),(column*w/10,h),5)
 
+#draws screen based on array
 def draw_10x14_tetris_array(tetris_array):
   for y in range(14):
     for x in range(10):
       if(tetris_array[y][x]==1):
         # print(f'x: {w/10*x} y: {h/10*y}')
-        pygame.draw.rect(screen,"orange",pygame.Rect(w/10*x, h/14*y, w/10 ,h/14))
+        pygame.draw.rect(screen,"orange",pygame.Rect(w/10*x, h/14*y, w/10 + 1 ,h/14 + 1))
+      elif tetris_array[y][x] == 2:
+        pygame.draw.rect(screen,"dark orange",pygame.Rect(w/10*x, h/14*y, w/10 + 1 ,h/14 + 1))
 
 
 pygame.init()
@@ -22,9 +25,51 @@ text_font = pygame.font.Font("font/PixelEmulator-xq08.ttf",30)
 
 #screen dimens text
 
+test_tetris_array =  [[0,0,1,0,0,0,0,0,0,0],
+                      [0,0,1,0,0,0,0,0,0,0],
+                      [0,0,1,1,0,0,0,0,0,0],
+                      [0,1,1,1,1,1,1,1,1,1],
+                      [1,1,1,1,1,1,1,1,1,1],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,0,1,0,0,0,0,0],
+                      [0,0,0,0,0,1,0,0,0,0],
+                      [0,0,0,0,0,1,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,1,0,0,0,0],
+                      [1,0,0,0,0,0,0,0,0,0],]
+
+new_array =         [[0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],]
+
+
 while True:
 
   w, h = pygame.display.get_surface().get_size()
+
+  screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}",False,(128,233,0))
+  screen_dimension_text_rect = screen_dimension_text_surf.get_rect(center=(w/2,h/2))
+  screen.blit(screen_dimension_text_surf,screen_dimension_text_rect)
+
+
+  for event in pygame.event.get():
+    if event.type == pygame.QUIT:
+      pygame.quit()
+      exit()
+
   
   screen.fill("white")
 
@@ -42,53 +87,43 @@ while True:
   # drawgrid()
 
   #take 14x10 array --> colors that specific part of the array which is 1 in grid 
-  test_tetris_array = [[0,0,1,0,0,0,0,0,0,0],
-                       [0,0,1,0,0,0,0,0,0,0],
-                       [0,0,1,1,0,0,0,0,0,0],
-                       [0,1,1,1,1,1,1,1,1,1],
-                       [1,1,1,1,1,1,1,1,1,1],
-                       [0,0,0,0,0,0,0,0,0,0],
-                       [0,0,0,1,0,0,0,0,0,0],
-                       [0,0,0,0,1,0,0,0,0,0],
-                       [0,0,0,0,0,1,0,0,0,0],
-                       [0,0,0,0,0,1,0,0,0,0],
-                       [0,0,0,0,0,0,0,0,0,0],
-                       [0,0,0,0,0,0,0,0,0,0],
-                       [0,0,0,0,0,1,0,0,0,0],
-                       [0,0,0,0,0,0,0,0,0,0],
-                       [1,0,0,0,0,0,0,0,0,0],]
+
   draw_10x14_tetris_array(test_tetris_array)
   #example syntaxs
     # to make a square 
     # pygame.draw.rect(screen,"orange",pygame.Rect(coordinate x,coordinate y,box x,box y))
 
-  block = pygame.draw.rect(screen,"orange",pygame.Rect(w/10, h/14, w/10 ,h/14))
-  block.y -= 1
+  # traverse every cell if value equals 1 put a square beneath it and delete the current cell in the original
+  # make the first array equal to the second array
+  # after every time we put all squares in to their new position print the array
+  for y in range(14):
+    for x in range(10):
+      if(test_tetris_array[y][x]==1):
+        if y+1 == 14 :
+          test_tetris_array[y][x] = 0
+          new_array[y][x] = 2
+        elif (test_tetris_array[y+1][x]==2 or new_array[y+1][x]==2):
+          print("runing!")
+          test_tetris_array[y][x] = 0
+          new_array[y][x] = 2
+       
+        else:
+          print("muah")
+          new_array[y+1][x] = 1
+          test_tetris_array[y][x] = 0
+      elif test_tetris_array[y][x] == 2:
+           for sub_y in range(14-y):
+            print("ahh")
+            if(test_tetris_array[sub_y][x]==1 or new_array[sub_y][x]==1):
+              new_array[sub_y][x] = 2
+  temp_array = test_tetris_array
+  test_tetris_array = new_array
+  new_array = temp_array
+  
+  
 
-  # new_array =         [[0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],
-  #                      [0,0,0,0,0,0,0,0,0,0],]
-  # while(1 in sublist for sublist in new_array):
-  #   for y in range(14):
-  #     for x in range(10):
-  #       if(test_tetris_array[y][x]==1):
-  #         if(y+1 == 14 or test_tetris_array[y+1][x]==2):
-  #           new_array[y][x] = 2
-  #         else:
-  #           new_array[y+1][x] = 1
-  #   test_tetris_array = new_array
-  #   draw_10x14_tetris_array(new_array)
+
+  draw_10x14_tetris_array(test_tetris_array)
 
 
 
@@ -113,13 +148,7 @@ while True:
 
   
 
-  screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}",False,(128,233,0))
-  screen_dimension_text_rect = screen_dimension_text_surf.get_rect(center=(w/2,h/2))
-  screen.blit(screen_dimension_text_surf,screen_dimension_text_rect)
-  for event in pygame.event.get():
-    if event.type == pygame.QUIT:
-      pygame.quit()
-      exit()
+
 
 
 #notes:
@@ -131,4 +160,4 @@ while True:
   #scratch this 
 
   pygame.display.update()
-  clock.tick(60)
+  clock.tick(0.7)
