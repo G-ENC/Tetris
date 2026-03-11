@@ -8,7 +8,7 @@ def drawgrid():
 
 #draws screen based on array
 def draw_10x14_tetris_array(tetris_array):
-  for y in range(14):
+  for y in range(13,0,-1):
     for x in range(10):
       if(tetris_array[y][x]==1):
         # print(f'x: {w/10*x} y: {h/10*y}')
