@@ -1,4 +1,5 @@
 import pygame
+import numpy 
 
 def drawgrid():
   for row in range(14):
@@ -17,6 +18,44 @@ def draw_10x14_tetris_array(tetris_array):
         pygame.draw.rect(screen,"dark orange",pygame.Rect(w/10*x, h/14*y, w/10 + 1 ,h/14 + 1))
 
 
+def falling_logic_from_array(array1,array2):
+  for y in range(13,0,-1):
+    for x in range(10):
+      
+      if(array1[y][x]==1):
+        
+        if y+2 == 14 :
+          array2[y+1][x] = 2
+          for sub_y in range(12,0,-1):
+            if array1[sub_y][x] == 1 or array2[sub_y][x] == 1:
+              print("asfsafasf")
+              array2[sub_y][x] = 2
+              array1[sub_y][x] = 2
+          array1[y][x] = 0
+        elif (array1[y+1][x] == 2 or array2[y+1][x] == 2):
+          print("runing!")
+          array1[y][x] = 0
+          array2[y][x] = 2
+          for sub_y in range(13,0,-1):
+            if array1[sub_y][x] == 1 or array2[sub_y][x] == 1:
+              print("asfsafasf")
+              array2[sub_y][x] = 2
+              array1[sub_y][x] = 2
+        else:
+          # print("muah")
+          array2[y+1][x] = 1
+          array1[y][x] = 0
+      # elif array1[y][x] == 2:
+      #      for sub_y in range(14):
+      #       if(array1[sub_y][x] == 1 or array2[sub_y][x]==1):
+      #         print("ahh")
+      #         array2[sub_y][x] = 2
+  temp_array = array1
+  array1 = array2
+  array2 = temp_array
+
+  draw_10x14_tetris_array(array1)
+
 pygame.init()
 screen = pygame.display.set_mode((1600,1200),pygame.RESIZABLE)
 pygame.display.set_caption("TETRIS")
@@ -24,7 +63,6 @@ clock = pygame.time.Clock()
 text_font = pygame.font.Font("font/PixelEmulator-xq08.ttf",30)
 
 #screen dimens text
-
 
 test_tetris_array =  [[0,0,1,0,0,0,0,0,0,0],
                       [0,0,1,0,0,0,0,0,0,0],
@@ -41,23 +79,22 @@ test_tetris_array =  [[0,0,1,0,0,0,0,0,0,0],
                       [0,0,0,0,0,1,0,0,0,0],
                       [1,0,0,0,0,0,0,0,0,0],]
 
-test_tetris_array2 = [[0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
+test_tetris_array2 = [[0,0,0,0,1,0,0,0,0,0],
+                      [0,0,0,0,1,0,0,0,0,0],
+                      [0,0,0,0,1,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,1,0,0,0,0,0],
+                      [0,0,0,0,1,0,0,0,0,0],
+                      [0,0,0,0,1,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],]
 
-
-new_array =         [[0,0,0,0,0,0,0,0,0,0],
+new_array =          [[0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
@@ -81,7 +118,6 @@ while True:
   screen_dimension_text_rect = screen_dimension_text_surf.get_rect(center=(w/2,h/2))
   screen.blit(screen_dimension_text_surf,screen_dimension_text_rect)
 
-
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       pygame.quit()
@@ -100,12 +136,34 @@ while True:
   #       test_surf.fill((0, 0, 0))
   #     screen.blit(test_surf,(15*x,y*15))
   
-  #line grid
-  # drawgrid()
+  # line grid
+  drawgrid()
 
-  #take 14x10 array --> colors that specific part of the array which is 1 in grid 
+  # take 14x10 array --> colors that specific part of the array which is 1 in grid
+  # 
 
-  draw_10x14_tetris_array(test_tetris_array2)
+  
+
+  for y in range(13,-1,-1):
+    for x in range(10):
+
+      if(test_tetris_array2[y][x]==1 ):
+        if y+1 == 14 :
+          test_tetris_array2[y][x] = 2
+        
+          for sub_y in range(12,0,-1):
+            if test_tetris_array2[sub_y][x] == 1:
+              test_tetris_array2[sub_y][x] = 2
+
+        elif test_tetris_array2[y+1][x] == 2 :
+          test_tetris_array2[y][x] = 2
+        
+        else:
+          test_tetris_array2[y+1][x] = 1
+          test_tetris_array2[y][x] = 0
+
+  
+    
 
   #example syntaxs
     # to make a square 
@@ -115,51 +173,16 @@ while True:
   # make the first array equal to the second array
   # after every time we put all squares in to their new position print the array
 
-  for y in range(13,0,-1):
-    for x in range(10):
-      
-      if(test_tetris_array2[y][x]==1):
-        
-        if y+1 == 14 :
-          test_tetris_array2[y][x] = 0
-          new_array[y][x] = 2
-          for sub_y in range(12,0,-1):
-            if test_tetris_array2[sub_y][x] == 1 or new_array[sub_y][x] == 1:
-              print("asfsafasf")
-              new_array[sub_y][x] = 2
-              test_tetris_array2[sub_y][x] = 2
-
-        elif (test_tetris_array2[y+1][x] == 2 or new_array[y+1][x] == 2):
-          print("runing!")
-          test_tetris_array2[y][x] = 0
-          new_array[y][x] = 2
-          for sub_y in range(13,0,-1):
-            if test_tetris_array2[sub_y][x] == 1 or new_array[sub_y][x] == 1:
-              print("asfsafasf")
-              new_array[sub_y][x] = 2
-              test_tetris_array2[sub_y][x] = 2
-
-
-        else:
-          # print("muah")
-          new_array[y+1][x] = 1
-          test_tetris_array2[y][x] = 0
-          
-      # elif test_tetris_array2[y][x] == 2:
-      #      for sub_y in range(14):
-      #       if(test_tetris_array2[sub_y][x] == 1 or new_array[sub_y][x]==1):
-      #         print("ahh")
-      #         new_array[sub_y][x] = 2
-
-  temp_array = test_tetris_array2
-  test_tetris_array2 = new_array
-  new_array = temp_array
+  a = numpy.array(test_tetris_array2)
+  b = numpy.array(new_array)
   
-  
-
-
+  print("test")
+  print(a)
+  print("new")
+  print(b)
   draw_10x14_tetris_array(test_tetris_array2)
 
+  # falling_logic_from_array(test_tetris_array2,new_array)
 
 
 
@@ -195,4 +218,4 @@ while True:
   #scratch this 
 
   pygame.display.update()
-  clock.tick(0.7)
+  clock.tick(5)
