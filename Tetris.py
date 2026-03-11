@@ -25,6 +25,7 @@ text_font = pygame.font.Font("font/PixelEmulator-xq08.ttf",30)
 
 #screen dimens text
 
+
 test_tetris_array =  [[0,0,1,0,0,0,0,0,0,0],
                       [0,0,1,0,0,0,0,0,0,0],
                       [0,0,1,1,0,0,0,0,0,0],
@@ -39,6 +40,22 @@ test_tetris_array =  [[0,0,1,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,1,0,0,0,0],
                       [1,0,0,0,0,0,0,0,0,0],]
+
+test_tetris_array2 = [[0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,1,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],
+                      [0,0,0,0,0,0,0,0,0,0],]
+
 
 new_array =         [[0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
@@ -88,7 +105,8 @@ while True:
 
   #take 14x10 array --> colors that specific part of the array which is 1 in grid 
 
-  draw_10x14_tetris_array(test_tetris_array)
+  draw_10x14_tetris_array(test_tetris_array2)
+
   #example syntaxs
     # to make a square 
     # pygame.draw.rect(screen,"orange",pygame.Rect(coordinate x,coordinate y,box x,box y))
@@ -96,34 +114,51 @@ while True:
   # traverse every cell if value equals 1 put a square beneath it and delete the current cell in the original
   # make the first array equal to the second array
   # after every time we put all squares in to their new position print the array
-  for y in range(14):
+
+  for y in range(13,0,-1):
     for x in range(10):
-      if(test_tetris_array[y][x]==1):
+      
+      if(test_tetris_array2[y][x]==1):
+        
         if y+1 == 14 :
-          test_tetris_array[y][x] = 0
+          test_tetris_array2[y][x] = 0
           new_array[y][x] = 2
-        elif (test_tetris_array[y+1][x]==2 or new_array[y+1][x]==2):
-          print("runing!")
-          test_tetris_array[y][x] = 0
-          new_array[y][x] = 2
-       
-        else:
-          print("muah")
-          new_array[y+1][x] = 1
-          test_tetris_array[y][x] = 0
-      elif test_tetris_array[y][x] == 2:
-           for sub_y in range(14-y):
-            print("ahh")
-            if(test_tetris_array[sub_y][x]==1 or new_array[sub_y][x]==1):
+          for sub_y in range(12,0,-1):
+            if test_tetris_array2[sub_y][x] == 1 or new_array[sub_y][x] == 1:
+              print("asfsafasf")
               new_array[sub_y][x] = 2
-  temp_array = test_tetris_array
-  test_tetris_array = new_array
+              test_tetris_array2[sub_y][x] = 2
+
+        elif (test_tetris_array2[y+1][x] == 2 or new_array[y+1][x] == 2):
+          print("runing!")
+          test_tetris_array2[y][x] = 0
+          new_array[y][x] = 2
+          for sub_y in range(13,0,-1):
+            if test_tetris_array2[sub_y][x] == 1 or new_array[sub_y][x] == 1:
+              print("asfsafasf")
+              new_array[sub_y][x] = 2
+              test_tetris_array2[sub_y][x] = 2
+
+
+        else:
+          # print("muah")
+          new_array[y+1][x] = 1
+          test_tetris_array2[y][x] = 0
+          
+      # elif test_tetris_array2[y][x] == 2:
+      #      for sub_y in range(14):
+      #       if(test_tetris_array2[sub_y][x] == 1 or new_array[sub_y][x]==1):
+      #         print("ahh")
+      #         new_array[sub_y][x] = 2
+
+  temp_array = test_tetris_array2
+  test_tetris_array2 = new_array
   new_array = temp_array
   
   
 
 
-  draw_10x14_tetris_array(test_tetris_array)
+  draw_10x14_tetris_array(test_tetris_array2)
 
 
 
