@@ -5,7 +5,7 @@ import math
 def checker_pattern():
   for y in range(w//4):
     for x in range(h//4):
-      test_surf = pygame.Surface((15,15))
+      test_surf = pygame.Surface((15,15)).convert_alpha()
       if((x)+(y))%2 == 1:
         test_surf.fill("red")
       else:
@@ -14,9 +14,9 @@ def checker_pattern():
 
 def drawgrid():
   for row in range(14):
-    pygame.draw.line(screen,"black",(0,row*h/14),(w,row*h/14),5)
+    pygame.draw.line(screen,"#662C91",(0,row*h/14),(w,row*h/14),5)
   for column in range(0,11):
-    pygame.draw.line(screen,"black",(column*w/10,0),(column*w/10,h),5)
+    pygame.draw.line(screen,"#662C91",(column*w/10,0),(column*w/10,h),5)
 
 #draws screen based on array
 def draw_10x14_tetris_array(tetris_array):
@@ -24,9 +24,9 @@ def draw_10x14_tetris_array(tetris_array):
     for x in range(10):
       if(tetris_array[y][x]==1):
         # print(f'x: {w/10*x} y: {h/10*y}')
-        pygame.draw.rect(screen,"orange",pygame.Rect(w/10*x, h/14*y, w/10 + 1 ,h/14 + 1))
+        pygame.draw.rect(screen,"#17A398",pygame.Rect(w/10*x, h/14*y, w/10 + 1 ,h/14 + 1))
       elif tetris_array[y][x] == 2:
-        pygame.draw.rect(screen,"dark orange",pygame.Rect(w/10*x, h/14*y, w/10 + 1 ,h/14 + 1))
+        pygame.draw.rect(screen,"#EE6C4D",pygame.Rect(w/10*x, h/14*y, w/10 + 1 ,h/14 + 1))
 
 def falling_logic_from_array(tetris_array):
   for y in range(13,-1,-1):
@@ -123,11 +123,11 @@ while True:
     if event.type == pygame.QUIT:
       pygame.quit()
       exit()
-    
+   
+   # drop one block on click 
     if event.type == pygame.MOUSEBUTTONDOWN:
       mouse_x_array = math.floor(event.pos[0]/(w/10))
       mouse_y_array = math.floor(event.pos[1]/(h/14))
-      print(mouse_y_array,mouse_x_array)
       test_tetris_array2[mouse_y_array][mouse_x_array] = 1
 
       
@@ -135,14 +135,19 @@ while True:
   
   screen.fill("white")
 
-# draw checker pattern
-  checker_pattern()
-
+  # checker_pattern()
 
   drawgrid()
 
   falling_logic_from_array(test_tetris_array2) 
 
+  #row elimination
+  #idea: if the row hass all 2s then delete his ass
+
+  #travers each row if it doesnt have a 1 or 0 then make it all 0
+
+  for y in range(9,-1,-1):
+    if y retrieved_elements = list(filter(lambda x: 'Bird' in x, animals))
 
 
 
@@ -158,7 +163,8 @@ while True:
 
 
   pygame.display.update()
-  clock.tick(5)
+  clock.tick(60)
+
 
 
 #example syntaxs:-------------------------------------------
