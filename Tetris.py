@@ -35,6 +35,9 @@ def draw_10x14_tetris_array(tetris_array):
         pygame.draw.rect(screen,"#EE6C4D",pygame.Rect(w/10*x, h/14*y, w/10 + 1 ,h/14 + 1))
 
 def falling_logic_from_array(tetris_array):
+
+  draw_10x14_tetris_array(tetris_array)
+
   for y in range(13,-1,-1):
     for x in range(10):
 
@@ -59,8 +62,7 @@ def falling_logic_from_array(tetris_array):
         else:
           tetris_array[y][x] = 0
           tetris_array[y+1][x] = 1
-          
-  draw_10x14_tetris_array(tetris_array)
+
 
 def eliminate_and_drop_row(tetris_array):
   #travers each row if it doesnt have a 1 or 0 then make it all 0
@@ -70,7 +72,7 @@ def eliminate_and_drop_row(tetris_array):
       tetris_array[y] = [0,0,0,0,0,0,0,0,0,0]
     #shift array down by 1
       for f in range(12,-1,-1):
-          tetris_array[f+1] = tetris_array [f+1] 
+          tetris_array[f+1] = tetris_array [f] 
 
 I_tetromino = [
    [1,1,1,1],
@@ -162,14 +164,14 @@ while True:
     if event.type == pygame.MOUSEBUTTONDOWN:
       mouse_x_array = math.floor(event.pos[0]/(w/10))
       mouse_y_array = math.floor(event.pos[1]/(h/14))
-      test_tetris_array2[mouse_y_array][mouse_x_array] = 1
+      new_array[mouse_y_array][mouse_x_array] = 1
 
 
   screen.fill("white")
 
   # checker_pattern()
 
-  drawgrid()
+  # drawgrid()
     #spawing tetromino
   #idea: there is a bacg of random tetromino 
   #but a single teromno will be spawed with its whole pasted direct at the center of the board
@@ -178,23 +180,31 @@ while True:
   #if there is 1 in the whole array the dont let another block to drop
   #we will controll the tetromino by keydown then shifting the array at that instant
 
-  draw_10x14_tetris_array(new_array)
+  # draw_10x14_tetris_array(new_array)
 
   falling_logic_from_array(new_array)
 
   eliminate_and_drop_row(new_array)
 
-  if(is_game_active(new_array) == False):
-    for y in range(4):
-        for x in range(3,7):
-          new_array[y][x] = I_tetromino[0][y][x-3]
+  #spawn new tetromino
+
+  def spawn_teromino_from_array(new_array,I_tetromino):
+    if(is_game_active(new_array) == False):
+      for y in range(4):
+          for x in range(3,7):
+            if(new_array[y][x] == 0):
+              print("putted")
+              # if():
+              new_array[y][x] = I_tetromino[0][y][x-3]
+  
+  spawn_teromino_from_array(new_array,I_tetromino)
 
 
 
 
 
  
-  
+  #should make the whole array fall not just the 
 
 
   a = numpy.array(new_array)
@@ -202,7 +212,7 @@ while True:
 
 
   pygame.display.update()
-  clock.tick(5)
+  clock.tick(1)
 
 
 
