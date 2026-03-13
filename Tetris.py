@@ -18,7 +18,13 @@ def drawgrid():
   for column in range(0,11):
     pygame.draw.line(screen,"#662C91",(column*w/10,0),(column*w/10,h),5)
 
-#draws screen based on array
+def is_game_active(tetris_array):
+  game_active = False
+  for y in range(13,-1,-1):
+    if (1 in tetris_array[y]):
+      game_active = True
+  return game_active  
+
 def draw_10x14_tetris_array(tetris_array):
   for y in range(13,-1,-1):
     for x in range(10):
@@ -55,6 +61,33 @@ def falling_logic_from_array(tetris_array):
           tetris_array[y+1][x] = 1
           
   draw_10x14_tetris_array(tetris_array)
+
+def eliminate_and_drop_row(tetris_array):
+  #travers each row if it doesnt have a 1 or 0 then make it all 0
+  #drop every index by 1 height
+  for y in range(13,-1,-1):
+    if( 0 in tetris_array[y] or 1 in tetris_array[y]) == False:
+      tetris_array[y] = [0,0,0,0,0,0,0,0,0,0]
+    #shift array down by 1
+      for f in range(12,-1,-1):
+          tetris_array[f+1] = tetris_array [f+1] 
+
+I_tetromino = [
+   [1,1,1,1],
+   [0,0,0,0],
+   [0,0,0,0],
+   [0,0,0,0],
+],[[0,0,1,0],
+   [0,0,1,0],
+   [0,0,1,0],
+   [0,0,1,0]]
+
+
+
+
+
+
+tetromino_array = []
 
 pygame.init()
 screen = pygame.display.set_mode((1600,1200),pygame.RESIZABLE)
@@ -110,6 +143,7 @@ new_array =          [[0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],]
 
 
+
 while True:
 
   w, h = pygame.display.get_surface().get_size()
@@ -130,40 +164,45 @@ while True:
       mouse_y_array = math.floor(event.pos[1]/(h/14))
       test_tetris_array2[mouse_y_array][mouse_x_array] = 1
 
-      
 
-  
   screen.fill("white")
 
   # checker_pattern()
 
   drawgrid()
+    #spawing tetromino
+  #idea: there is a bacg of random tetromino 
+  #but a single teromno will be spawed with its whole pasted direct at the center of the board
+  #if there could not be a viable spot then then gemo over ---- later
 
-  falling_logic_from_array(test_tetris_array2) 
+  #if there is 1 in the whole array the dont let another block to drop
+  #we will controll the tetromino by keydown then shifting the array at that instant
 
-  #row elimination
-  #idea: if the row hass all 2s then delete his ass
+  draw_10x14_tetris_array(new_array)
 
-  #travers each row if it doesnt have a 1 or 0 then make it all 0
+  falling_logic_from_array(new_array)
 
-  for y in range(9,-1,-1):
-    if y retrieved_elements = list(filter(lambda x: 'Bird' in x, animals))
+  eliminate_and_drop_row(new_array)
 
-
-
-
-
-
-
-
-
-
+  if(is_game_active(new_array) == False):
+    for y in range(4):
+        for x in range(3,7):
+          new_array[y][x] = I_tetromino[0][y][x-3]
 
 
+
+
+
+ 
+  
+
+
+  a = numpy.array(new_array)
+  print(a)
 
 
   pygame.display.update()
-  clock.tick(60)
+  clock.tick(5)
 
 
 
