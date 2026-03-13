@@ -35,8 +35,27 @@ def draw_10x14_tetris_array(tetris_array):
         pygame.draw.rect(screen,"#EE6C4D",pygame.Rect(w/10*x, h/14*y, w/10 + 1 ,h/14 + 1))
 
 def falling_logic_from_array(tetris_array):
+      #spawing tetromino
+  #idea: there is a bacg of random tetromino 
+  #but a single teromno will be spawed with its whole pasted direct at the center of the board
+  #if there could not be a viable spot then then gemo over ---- later
 
-  draw_10x14_tetris_array(tetris_array)
+  #if there is 1 in the whole array the dont let another block to drop
+  #we will controll the tetromino by keydown then shifting the array at that instant
+
+  first_x_pos, x_length = 0, 1
+  fuckass_flag = 0
+
+  # determines the surface of the tetromino based on its position to the array
+  if(not fuckass_flag):
+    for y in range(13,-1,-1):
+      for x in range(10):
+        if tetris_array[y][x] == 1 and not fuckass_flag:
+          first_x_pos = x
+          fuckass_flag = 1
+          for x_sub in range(10-x):
+            if(tetris_array[y][x+x_sub] == 1):
+              x_length += 1
 
   for y in range(13,-1,-1):
     for x in range(10):
@@ -53,16 +72,28 @@ def falling_logic_from_array(tetris_array):
             if tetris_array[sub_y][x] == 2:
               if tetris_array[sub_y+1][x] == 1:
                 tetris_array[sub_y][x] = 2
-        
+
         #freeze if there is a block beneath that is frozen
-        elif tetris_array[y+1][x] == 2 :
-          tetris_array[y][x] = 2
-        
+        elif (2 in tetris_array[y+1][first_x_pos:first_x_pos+x_length-1]) :
+          for sub_y in range(13,-1,-1):
+            for sub_x in range(10):
+
+              if(tetris_array[sub_y][sub_x]==1):
+                tetris_array[sub_y][sub_x] = 2
+
         #drop square
         else:
           tetris_array[y][x] = 0
           tetris_array[y+1][x] = 1
 
+def spawn_teromino_from_array(tetris_array,I_tetromino):
+  if(is_game_active(tetris_array) == False):
+    for y in range(4):
+        for x in range(3,7):
+          if(tetris_array[y][x] == 0):
+            # print("putted")
+            # if():
+            tetris_array[y][x] = I_tetromino[0][y][x-3]
 
 def eliminate_and_drop_row(tetris_array):
   #travers each row if it doesnt have a 1 or 0 then make it all 0
@@ -71,8 +102,9 @@ def eliminate_and_drop_row(tetris_array):
     if( 0 in tetris_array[y] or 1 in tetris_array[y]) == False:
       tetris_array[y] = [0,0,0,0,0,0,0,0,0,0]
     #shift array down by 1
-      for f in range(12,-1,-1):
-          tetris_array[f+1] = tetris_array [f] 
+      for f in range(y,1,-1):
+          tetris_array[f] = tetris_array[f-1]
+ 
 
 I_tetromino = [
    [1,1,1,1],
@@ -88,7 +120,6 @@ I_tetromino = [
 
 
 
-
 tetromino_array = []
 
 pygame.init()
@@ -99,35 +130,6 @@ text_font = pygame.font.Font("font/PixelEmulator-xq08.ttf",30)
 
 #screen dimens text
 
-test_tetris_array =  [[0,0,1,0,0,0,0,0,0,0],
-                      [0,0,1,0,0,0,0,0,0,0],
-                      [0,0,1,1,0,0,0,0,0,0],
-                      [0,1,1,1,1,1,1,1,1,1],
-                      [1,1,1,1,1,1,1,1,1,1],
-                      [0,0,0,0,0,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,0,1,0,0,0,0,0],
-                      [0,0,0,0,0,1,0,0,0,0],
-                      [0,0,0,0,0,1,0,0,0,0],
-                      [0,0,0,0,0,0,0,0,0,0],
-                      [0,0,0,0,0,0,0,0,0,0],
-                      [0,0,0,0,0,1,0,0,0,0],
-                      [1,0,0,0,0,0,0,0,0,0],]
-
-test_tetris_array2 = [[0,0,0,0,1,0,0,0,0,0],
-                      [0,0,1,1,1,1,0,0,0,0],
-                      [0,0,0,0,1,1,1,0,0,0],
-                      [0,0,1,0,1,0,0,0,0,0],
-                      [0,0,0,1,0,0,0,0,0,0],
-                      [0,0,0,1,0,1,1,0,0,0],
-                      [0,0,0,0,1,0,0,0,0,0],
-                      [0,0,0,1,1,0,0,0,0,0],
-                      [0,0,0,0,1,1,1,0,0,0],
-                      [1,1,1,1,1,1,1,1,1,1],
-                      [0,0,0,0,1,0,0,0,0,0],
-                      [0,0,0,0,1,0,0,0,0,0],
-                      [0,0,0,0,1,0,0,0,0,0],
-                      [0,0,0,0,0,0,0,0,0,0],]
 
 new_array =          [[0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
@@ -139,17 +141,25 @@ new_array =          [[0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
-                      [0,0,0,0,0,0,0,0,0,0],
-                      [0,0,0,0,0,0,0,0,0,0],
-                      [0,0,0,0,0,0,0,0,0,0],
-                      [0,0,0,0,0,0,0,0,0,0],]
+                      [1,1,1,0,0,0,0,1,1,1],
+                      [1,1,1,0,0,0,0,1,1,1],
+                      [0,0,0,0,0,1,0,0,0,0],
+                      [0,0,0,0,0,1,0,0,0,0],]
 
 
+cooldown = 0
+delay = 5
+
+key_cooldown = 0
+key_delay = 1
 
 while True:
 
-  w, h = pygame.display.get_surface().get_size()
 
+
+#drawscreen
+  w, h = pygame.display.get_surface().get_size()
+  
   screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}",False,(128,233,0))
   screen_dimension_text_rect = screen_dimension_text_surf.get_rect(center=(w/2,h/2))
   screen.blit(screen_dimension_text_surf,screen_dimension_text_rect)
@@ -165,54 +175,53 @@ while True:
       mouse_x_array = math.floor(event.pos[0]/(w/10))
       mouse_y_array = math.floor(event.pos[1]/(h/14))
       new_array[mouse_y_array][mouse_x_array] = 1
+  
+  # move tetris block by one when down arrow is clicked
 
+ 
+  if event.type == pygame.KEYDOWN:
+    if event.key == pygame.K_DOWN:
+      print("click")
+      cooldown -= 1
+
+      
+                
 
   screen.fill("white")
 
-  # checker_pattern()
-
-  # drawgrid()
-    #spawing tetromino
-  #idea: there is a bacg of random tetromino 
-  #but a single teromno will be spawed with its whole pasted direct at the center of the board
-  #if there could not be a viable spot then then gemo over ---- later
-
-  #if there is 1 in the whole array the dont let another block to drop
-  #we will controll the tetromino by keydown then shifting the array at that instant
-
-  # draw_10x14_tetris_array(new_array)
-
-  falling_logic_from_array(new_array)
-
-  eliminate_and_drop_row(new_array)
-
-  #spawn new tetromino
-
-  def spawn_teromino_from_array(new_array,I_tetromino):
-    if(is_game_active(new_array) == False):
-      for y in range(4):
-          for x in range(3,7):
-            if(new_array[y][x] == 0):
-              print("putted")
-              # if():
-              new_array[y][x] = I_tetromino[0][y][x-3]
   
+  drawgrid()
+
+  draw_10x14_tetris_array(new_array)
+
   spawn_teromino_from_array(new_array,I_tetromino)
+  
+  delta = clock.tick() / 5
+  cooldown -= delta
+
+  # print(cooldown)
+
+  if(cooldown<=0):
+
+    cooldown = delay
+
+    falling_logic_from_array(new_array)
+    
+    eliminate_and_drop_row(new_array)
 
 
 
-
-
+    
  
-  #should make the whole array fall not just the 
 
 
-  a = numpy.array(new_array)
-  print(a)
 
+
+  # a = numpy.array(new_array)
+  # print(a)
 
   pygame.display.update()
-  clock.tick(1)
+  clock.tick(60)
 
 
 
