@@ -158,23 +158,24 @@ delay = 5
 key_cooldown = 0
 key_delay = 1
 
+left_most_x = 0
+
+
 while True:
 
-
-
 #drawscreen
-  w, h = pygame.display.get_surface().get_size()
-  
-
-
+  w, h = pygame.display.get_surface().get_size()  
 
 #event handler
+  key_delta = clock.tick()
+  key_cooldown -= key_delta
+
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       pygame.quit()
       exit()
    
-   # drop one block on click 
+      # drop one block on click 
     if event.type == pygame.MOUSEBUTTONDOWN:
       if event.button == 1:
         mouse_x_array = math.floor(event.pos[0]/(w/10))
@@ -185,7 +186,7 @@ while True:
       if event.button == 3:
         mouse_x_array = math.floor(event.pos[0]/(w/10))
         mouse_y_array = math.floor(event.pos[1]/(h/14))
-        new_array[mouse_y_array+6] = [1,1,1,1,1,1,1,1,1,1]
+        new_array[mouse_y_array+6] = [0,0,0,0,0,0,0,0,0,0]
 
     if event.type == pygame.KEYDOWN:
       if event.key == pygame.K_SPACE:
@@ -193,28 +194,15 @@ while True:
         exit()
 
 
-  # move tetris block by one when down arrow is clicked
-  if event.type == pygame.KEYDOWN:
-    if event.key == pygame.K_DOWN:
-      print("click")
-      cooldown -= 1
-      
+      # move tetris block by one when down arrow is clicked
 
-  #move tetris block to the right
+        
 
-  key_delta = clock.tick()
+      #move tetris block to the right
 
-  key_cooldown -= key_delta
-
-  if(key_cooldown<=0):
-    screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}, key cooldown: {clock.tick()}",False,(128,233,0))
-    screen_dimension_text_rect = screen_dimension_text_surf.get_rect(topleft=(6,0))
-    key_cooldown = key_delay
 
     if event.type == pygame.KEYDOWN:
       if event.key == pygame.K_RIGHT:
-          
-        
           for y in range(19,5,-1):
             if(new_array[y][9] != 1): 
 
@@ -226,44 +214,54 @@ while True:
                   
                   temp[x+1] = 1
 
-                
                 elif new_array[y][x-1] == 0 or new_array[y][x-1] == 2:
                   temp[x] = new_array[y][x]
 
               new_array[y] = temp
-                    
 
+      #move tetris block to right
 
+    def get_left_most(tetris_array):
+      for y in range(19,0,-1):
+        for x in range(10):
+          if tetris_array[y][x] == 1 and tetris_array[y][x-1] == 0:
+            return x 
+          elif x == None:
+            return 0
+        
+    
     if event.type == pygame.KEYDOWN:
       if event.key == pygame.K_LEFT:
-        
-          for y in range(19,5,-1):
-            if(new_array[y][0] != 1 ):
-
-              temp = [0,0,0,0,0,0,0,0,0,0]
-              
-              for x in range(10):
-                  if new_array[y][x] == 2:
-                    temp[x] = 2
-                  elif new_array[y][x] == 0:
-                    temp[x] = 0
-                  else:
-                    if (new_array[y][x-1] != 2 ):
-                      temp[x-1] = 1
-                    else:
-                      temp[x] = 1
           
+          for y in range(19,5,-1):
+
+            if(new_array[y][0] != 1 ):
+              temp = [0,0,0,0,0,0,0,0,0,0]
+
+              for x in range(10):
+                  
+                  if new_array[y][x] == 2:
                     
-     
-           
+                    temp[x] = 2
+
+                  elif new_array[y][x] == 0:
+              
+                    temp[x] = 0
+
+                  else:
+                    if new_array[y][left_most_x-1] != 2:
+                      temp[x-1] = 1
+              
 
             new_array[y] = temp
 
+  left_most_x = get_left_most(new_array)
 
+  if event.type == pygame.KEYDOWN:
+    if event.key == pygame.K_DOWN:
+      cooldown -= 1
   #move tetris block to the left
-
-      
-                
+       
 
   screen.fill("black")
 
@@ -286,8 +284,9 @@ while True:
   eliminate_and_drop_row(new_array)
 
 
-    
-
+  
+  screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}, leftMost: {left_most_x}",False,(128,233,0))
+  screen_dimension_text_rect = screen_dimension_text_surf.get_rect(topleft=(6,0))
   screen.blit(screen_dimension_text_surf,screen_dimension_text_rect)
   print(numpy.array(new_array))
   
