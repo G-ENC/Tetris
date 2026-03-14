@@ -165,9 +165,8 @@ while True:
 #drawscreen
   w, h = pygame.display.get_surface().get_size()
   
-  screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}",False,(128,233,0))
-  screen_dimension_text_rect = screen_dimension_text_surf.get_rect(center=(w/2,h/2))
-  screen.blit(screen_dimension_text_surf,screen_dimension_text_rect)
+
+
 
 #event handler
   for event in pygame.event.get():
@@ -203,47 +202,57 @@ while True:
 
   #move tetris block to the right
 
-  if event.type == pygame.KEYDOWN:
-    if event.key == pygame.K_RIGHT:
-      
-        for y in range(19,5,-1):
-          if(new_array[y][9] != 1): 
+  key_delta = clock.tick()*10
 
-            temp = [0,0,0,0,0,0,0,0,0,0]
+  key_cooldown -= key_delta
+
+  if(key_cooldown<=0):
+    screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}, key cooldown: {key_delta}",False,(128,233,0))
+    screen_dimension_text_rect = screen_dimension_text_surf.get_rect(topleft=(6,0))
+    key_cooldown = key_delay
+
+    if event.type == pygame.KEYDOWN:
+      if event.key == pygame.K_RIGHT:
           
-            for x in range(9,-1,-1):
-              
-              if(new_array[y][x] == 1):
+        
+          for y in range(19,5,-1):
+            if(new_array[y][9] != 1): 
+
+              temp = [0,0,0,0,0,0,0,0,0,0]
+            
+              for x in range(9,-1,-1):
                 
-                temp[x+1] = 1
+                if(new_array[y][x] == 1):
+                  
+                  temp[x+1] = 1
 
-              
-              elif new_array[y][x-1] == 0 or new_array[y][x-1] == 2:
-                temp[x] = new_array[y][x]
+                
+                elif new_array[y][x-1] == 0 or new_array[y][x-1] == 2:
+                  temp[x] = new_array[y][x]
 
-            new_array[y] = temp
+              new_array[y] = temp
                     
 
 
-  if event.type == pygame.KEYDOWN:
-    if event.key == pygame.K_LEFT:
-      
-        for y in range(19,5,-1):
-          if(new_array[y][0] != 1 ):
+    if event.type == pygame.KEYDOWN:
+      if event.key == pygame.K_LEFT:
+        
+          for y in range(19,5,-1):
+            if(new_array[y][0] != 1 ):
 
-            temp = [0,0,0,0,0,0,0,0,0,0]
-            
+              temp = [0,0,0,0,0,0,0,0,0,0]
+              
 
-            for x in range(10):
-                if new_array[y][x] == 2:
-                  temp[x] = 2
-                elif new_array[y][x] == 0:
-                  temp[x] = 0
-                else:
-                  if (new_array[y][x-1] != 2):
-                    temp[x-1] = 1
+              for x in range(10):
+                  if new_array[y][x] == 2:
+                    temp[x] = 2
+                  elif new_array[y][x] == 0:
+                    temp[x] = 0
                   else:
-                    temp[x] = 1
+                    if (new_array[y][x-1] != 2 and new_array[y][x-1] != 1):
+                      temp[x-1] = 1
+                    else:
+                      temp[x] = 1
           
                     
      
@@ -257,7 +266,7 @@ while True:
       
                 
 
-  screen.fill("white")
+  screen.fill("black")
 
   delta = clock.tick() / 5
   cooldown -= delta
@@ -280,7 +289,7 @@ while True:
 
     
 
-
+  screen.blit(screen_dimension_text_surf,screen_dimension_text_rect)
   print(numpy.array(new_array))
   
 
