@@ -202,12 +202,12 @@ while True:
 
   #move tetris block to the right
 
-  key_delta = clock.tick()*10
+  key_delta = clock.tick()
 
   key_cooldown -= key_delta
 
   if(key_cooldown<=0):
-    screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}, key cooldown: {key_delta}",False,(128,233,0))
+    screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}, key cooldown: {clock.tick()}",False,(128,233,0))
     screen_dimension_text_rect = screen_dimension_text_surf.get_rect(topleft=(6,0))
     key_cooldown = key_delay
 
@@ -242,14 +242,13 @@ while True:
 
               temp = [0,0,0,0,0,0,0,0,0,0]
               
-
               for x in range(10):
                   if new_array[y][x] == 2:
                     temp[x] = 2
                   elif new_array[y][x] == 0:
                     temp[x] = 0
                   else:
-                    if (new_array[y][x-1] != 2 and new_array[y][x-1] != 1):
+                    if (new_array[y][x-1] != 2 ):
                       temp[x-1] = 1
                     else:
                       temp[x] = 1
