@@ -86,13 +86,13 @@ def falling_logic_from_array(tetris_array):
           tetris_array[y][x] = 0
           tetris_array[y+1][x] = 1
 
-def spawn_teromino_from_array(tetris_array,I_tetromino):
+def spawn_teromino_from_array(tetris_array,tetromino_array):
   if(is_game_active(tetris_array) == False):
     for y in range(4):
         for x in range(3,7):
           if(tetris_array[y+5][x] == 0):
 
-            tetris_array[y+5][x] = I_tetromino[0][y][x-3]
+            tetris_array[y+5][x] = tetromino_array[y][x-3]
 
 def eliminate_and_drop_row(tetris_array):
   #travers each row if it doesnt have a 1 or 0 then make it all 0
@@ -118,6 +118,86 @@ I_tetromino = [
    [0,0,1,0],
    [0,0,1,0]]
 
+T_tetromino = [
+   [1,1,1,0],
+   [0,1,0,0],
+   [0,0,0,0],
+   [0,0,0,0],
+],[[0,1,0,0],
+   [1,1,0,0],
+   [0,1,0,0],
+   [0,0,0,0],
+],[[0,1,0,0],
+   [1,1,1,0],
+   [0,0,0,0],
+   [0,0,0,0],
+],[[1,0,0,0],
+   [1,1,0,0],
+   [1,0,0,0],
+   [0,0,0,0]]
+
+Z_tetromino = [
+   [0,1,1,0],
+   [1,1,0,0],
+   [0,0,0,0],
+   [0,0,0,0],
+],[[1,0,0,0],
+   [1,1,0,0],
+   [0,1,0,0],
+   [0,0,0,0]]
+
+S_tetromino = [
+   [1,1,0,0],
+   [0,1,1,0],
+   [0,0,0,0],
+   [0,0,0,0],
+],[[0,1,0,0],
+   [1,1,0,0],
+   [1,0,0,0],
+   [0,0,0,0]]
+
+O_tetromino = [
+   [1,1,0,0],
+   [1,1,0,0],
+   [0,0,0,0],
+   [0,0,0,0],
+]
+
+L_tetromino = [
+   [0,1,1,0],
+   [0,1,0,0],
+   [0,1,0,0],
+   [0,0,0,0],
+],[[1,1,1,0],
+   [0,0,1,0],
+   [0,0,0,0],
+   [0,0,0,0],
+],[[0,1,0,0],
+   [0,1,0,0],
+   [1,1,0,0],
+   [0,0,0,0],
+],[[1,0,0,0],
+   [1,1,1,0],
+   [0,0,0,0],
+   [0,0,0,0]]
+
+J_tetromino = [
+   [1,1,0,0],
+   [0,1,0,0],
+   [0,1,0,0],
+   [0,0,0,0],
+],[[1,1,1,0],
+   [1,0,0,0],
+   [0,0,0,0],
+   [0,0,0,0],
+],[[0,1,0,0],
+   [0,1,0,0],
+   [0,1,1,0],
+   [0,0,0,0],
+],[[0,0,1,0],
+   [1,1,1,0],
+   [0,0,0,0],
+   [0,0,0,0]]
 
 tetromino_array = []
 
@@ -159,12 +239,15 @@ key_cooldown = 0
 key_delay = 1
 
 left_most_x = 0
+right_most_x = 0
 
 
 while True:
 
 #drawscreen
   w, h = pygame.display.get_surface().get_size()  
+
+
 
 #event handler
   key_delta = clock.tick()
@@ -201,61 +284,98 @@ while True:
       #move tetris block to the right
 
 
+    # if event.type == pygame.KEYDOWN:
+    #   if event.key == pygame.K_RIGHT:
+    #       for y in range(19,5,-1):
+    #         if(new_array[y][9] != 1): 
+
+    #           temp = [0,0,0,0,0,0,0,0,0,0]
+            
+    #           for x in range(9,-1,-1):
+                
+    #             if(new_array[y][x] == 1):
+                  
+    #               temp[x+1] = 1
+
+    #             elif new_array[y][x-1] == 0 or new_array[y][x-1] == 2:
+    #               temp[x] = new_array[y][x]
+
+    #           new_array[y] = temp
+
+      #move tetris block to right
+
+
+          
+    def get_right_most(tetris_array):
+      for y in range(19,0,-1):
+        for x in range(8,-1,-1):
+          if tetris_array[y][x] == 1 and (tetris_array[y][x+1] == 0 or tetris_array[y][x+1] == 2):
+            return x 
+          
+          
+    right_most_x = get_right_most(new_array)
+
     if event.type == pygame.KEYDOWN:
       if event.key == pygame.K_RIGHT:
+          
           for y in range(19,5,-1):
-            if(new_array[y][9] != 1): 
 
+            if(new_array[y][9] != 1):
+              
               temp = [0,0,0,0,0,0,0,0,0,0]
-            
-              for x in range(9,-1,-1):
-                
-                if(new_array[y][x] == 1):
-                  
-                  temp[x+1] = 1
 
-                elif new_array[y][x-1] == 0 or new_array[y][x-1] == 2:
-                  temp[x] = new_array[y][x]
+              for x in range(9,-1,-1):
+                  
+                  if new_array[y][x] == 2:
+                    temp[x] = 2
+
+                  elif new_array[y][x] == 0:
+                    temp[x] = 0
+
+                  else:
+                    if new_array[y][right_most_x+1] != 2:
+                      temp[x+1] = 1
+                    else:
+                      temp [x] = 1
 
               new_array[y] = temp
 
-      #move tetris block to right
 
     def get_left_most(tetris_array):
       for y in range(19,0,-1):
         for x in range(10):
-          if tetris_array[y][x] == 1 and tetris_array[y][x-1] == 0:
+          if tetris_array[y][x] == 1 and (tetris_array[y][x-1] == 0 or tetris_array[y][x-1] == 2):
             return x 
           elif x == None:
             return 0
-        
-    
+
+    left_most_x = get_left_most(new_array)  
     if event.type == pygame.KEYDOWN:
       if event.key == pygame.K_LEFT:
           
           for y in range(19,5,-1):
 
-            if(new_array[y][0] != 1 ):
+            if(new_array[y][0] != 1):
+              
               temp = [0,0,0,0,0,0,0,0,0,0]
 
               for x in range(10):
                   
                   if new_array[y][x] == 2:
-                    
                     temp[x] = 2
 
                   elif new_array[y][x] == 0:
-              
                     temp[x] = 0
 
                   else:
                     if new_array[y][left_most_x-1] != 2:
                       temp[x-1] = 1
-              
+                    else:
+                      temp [x] = 1
 
-            new_array[y] = temp
+              new_array[y] = temp
 
-  left_most_x = get_left_most(new_array)
+ 
 
   if event.type == pygame.KEYDOWN:
     if event.key == pygame.K_DOWN:
@@ -264,7 +384,7 @@ while True:
        
 
   screen.fill("black")
-
+  
   delta = clock.tick() / 5
   cooldown -= delta
 
@@ -272,7 +392,7 @@ while True:
 
   draw_10x14_tetris_array(new_array)
 
-  spawn_teromino_from_array(new_array,I_tetromino)
+  spawn_teromino_from_array(new_array,O_tetromino)
 
   # print(cooldown)
 
@@ -285,7 +405,7 @@ while True:
 
 
   
-  screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}, leftMost: {left_most_x}",False,(128,233,0))
+  screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}, leftMost: {left_most_x}, rightMost: {right_most_x}, fps:{math.floor(clock.get_fps())}, free_use:{len(O_tetromino)}",False,(128,233,0))
   screen_dimension_text_rect = screen_dimension_text_surf.get_rect(topleft=(6,0))
   screen.blit(screen_dimension_text_surf,screen_dimension_text_rect)
   print(numpy.array(new_array))
