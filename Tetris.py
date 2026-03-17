@@ -363,28 +363,29 @@ def rotation_logic(tetris_array):
 
   #find top left of the 1s
   x_co,y_co = determine_top_left_of_ones(tetris_array)
-  #extract 4x4 from top left
 
+  #extract 4x4 from top left if x+x_co is more than 10 the make that entry a 0
   for x in range(4):
     for y in range(4):
-      if tetris_array[y_co+y][x_co+x] == 1:
+      if x_co+x>=10:
+        sub_tetris_array_4x4[y][x] = 0
+      elif tetris_array[y_co+y][x_co+x] == 1:
         sub_tetris_array_4x4[y][x] = 1
 
   #flip the array 90 degree clockwise
   sub_tetris_array_4x4 = numpy.rot90(sub_tetris_array_4x4,3)
 
   #find top left of 4x4 1s
-
   xx_co,yy_co = determine_top_left_of_ones_4x4(sub_tetris_array_4x4)
 
+  #check if the 
+
+  #putting 4x4 array to its palce based on 4x4
   for y in range(4):
     for x in range(4):
-      if 
-      if(sub_tetris_array_4x4[y][x] == 1 and new_tetris_array[y_co+y][x_co+x] != 2 and new_tetris_array[y_co+y][x_co+x-1] != 2 and new_tetris_array[y_co+y][x_co+x-2] != 2):
-        new_tetris_array[y_co+y-yy_co][x_co+x-xx_co] = 1
 
-  print(xx_co,yy_co)
-      
+      if(sub_tetris_array_4x4[y][x] == 1 ):
+        new_tetris_array[y_co+y-yy_co][x_co+x-xx_co] = 1      
 
   return new_tetris_array
 
