@@ -15,9 +15,9 @@ def checker_pattern():
 
 def drawgrid():
   for row in range(14):
-    pygame.draw.line(screen,"black",(0,row*h/14),(w,row*h/14),5)
+    pygame.draw.line(screen,"purple",(0,row*h/14),(w,row*h/14),5)
   for column in range(0,11):
-    pygame.draw.line(screen,"black",(column*w/10,0),(column*w/10,h),5)
+    pygame.draw.line(screen,"purple",(column*w/10,0),(column*w/10,h),5)
 
 def is_game_active(tetris_array):
   game_active = False
@@ -288,31 +288,44 @@ def random_tetromino_piece():
 #   def flip(self):
 #     self.tetromino_array[0+1]
 
-#if 1 is beneath a zero send a coodrinate of that if the are no 1 beneath a zero send that cooardinate 
+def determine_top_left_of_ones(tetris_array):
+  x_co = 0
+  y_co = 0
+  for y in range(20):
+    for x in range(10):
+      if tetris_array[y][x] == 1:
+        y_co = y
+        for xx in range(10):
+          for yy in range(20):
+            if tetris_array[yy][xx] == 1:
+              x_co = xx
+              return(x_co,y_co)
+            
+def determine_top_left_of_ones_4x4(tetris_array):
+  x_co = 0
+  y_co = 0
+  for y in range(4):
+    for x in range(4):
+      if tetris_array[y][x] == 1:
+        y_co = y
+        for xx in range(4):
+          for yy in range(4):
+            if tetris_array[yy][xx] == 1:
+              x_co = xx
+              return(x_co,y_co)
+            
+# def is_left_shiftable_5x5(tetris_array):
 
-def is_first_occurance_of_1(tetris_array,y_co,x_co):
-  
-  if tetris_array[y_co][x_co] == 1:
-    if tetris_array[y_co+1][x_co-1] == 1:
-      return True
-    elif tetris_array[y_co+2][x_co-1] == 1:
-      return True
-    return True
-  else:
-    return False
-
-def is_left_shiftable_5x5(tetris_array):
-  for y in range(1,5):
-    for x in range(1,5):
-      if tetris_array[y][x] == 1 and tetris_array[y][x-1] != 0:
-        return False
-  return True   
+#   for y in range(1,6):
+#     for x in range(1,6):
+#       if tetris_array[y][x] == 1 and tetris_array[y][x-1] != 0:
+#         return False
+#   return True
 
 #every roation is described eby a 4x4 part of the whole array if there is a 1 on the array rotate it in the correct place else leave it still
 def rotation_logic(tetris_array):
 
   #copying the array without 1s
-  
   new_tetris_array = [[0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
@@ -333,69 +346,48 @@ def rotation_logic(tetris_array):
                       [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0],
                       [0,0,0,0,0,0,0,0,0,0]]
-
+  
+  #make copy of the array with only 2s
   for y in range(20):
     for x in range(10):
       if(tetris_array [y][x] != 1):
         new_tetris_array[y][x] = tetris_array[y][x]
       else:
         new_tetris_array[y][x] = 0
-  sub_tetris_array_5x5 =[
-                        [0,0,0,0,0],
-                        [0,0,0,0,0],
-                        [0,0,0,0,0],
-                        [0,0,0,0,0],
-                        [0,0,0,0,0]]
 
+  sub_tetris_array_4x4 =[
+                        [0,0,0,0],
+                        [0,0,0,0],
+                        [0,0,0,0],
+                        [0,0,0,0]]
 
-  for y in range(20):
-    for x in range(10):
-    
-      if is_first_occurance_of_1(tetris_array,y,x):
-        for sub_y in range(0,5,1):
-          for sub_x in range(0,5,1):
-            if tetris_array[y+sub_y][x+sub_x] == 1:
-              sub_tetris_array_5x5[sub_y][sub_x] = tetris_array[y+sub_y][x+sub_x]
-        print(f'1{numpy.array(sub_tetris_array_5x5)} - {is_left_shiftable_5x5(sub_tetris_array_5x5)}')
-        sub_tetris_array_5x5 = numpy.rot90(sub_tetris_array_5x5,3)
+  #find top left of the 1s
+  x_co,y_co = determine_top_left_of_ones(tetris_array)
+  #extract 4x4 from top left
 
-        origined_sub_tetris_array_5x2 = [
-                                        [0,0,0,0,0],
-                                        [0,0,0,0,0],
-                                        [0,0,0,0,0],
-                                        [0,0,0,0,0],
-                                        [0,0,0,0,0]]
-        
-        # for i_y in range(5):
-        #   for i_x in range(5):
-        #     if is_first_occurance_of_1(sub_tetris_array_5x5,i_y,i_x):
-        #       for i_yy in range(5):
-        #         for i_xx in range(5):
-                  
+  for x in range(4):
+    for y in range(4):
+      if tetris_array[y_co+y][x_co+x] == 1:
+        sub_tetris_array_4x4[y][x] = 1
 
-        for i_y in range(5):
-          for i_x in range(5):
-            if sub_tetris_array_5x5[i_y][i_x] == 1:
-              new_tetris_array[y+i_y][x+i_x] = 1
+  #flip the array 90 degree clockwise
+  sub_tetris_array_4x4 = numpy.rot90(sub_tetris_array_4x4,3)
 
-      #first reverse the part of the array 
-        # for sub_yy in range(20):
-        #   if(1 in tetris_array[sub_yy]):
-        #     for i in range(2):
-        #       tetris_array[sub_yy + i], tetris_array[sub_yy - i + 3] =  tetris_array[sub_yy - i + 3] , tetris_array[sub_yy + i]  
-      #then swith the x and y coordinate
-        # for sub_y in range(5):
-        #   for sub_x in range(5):
+  #find top left of 4x4 1s
 
-        #     if(tetris_array[sub_y+y][sub_x+x] == 1):
-        #       new_tetris_array[sub_x+y-1][sub_y+x] = 1
+  xx_co,yy_co = determine_top_left_of_ones_4x4(sub_tetris_array_4x4)
 
+  for y in range(4):
+    for x in range(4):
+      if 
+      if(sub_tetris_array_4x4[y][x] == 1 and new_tetris_array[y_co+y][x_co+x] != 2 and new_tetris_array[y_co+y][x_co+x-1] != 2 and new_tetris_array[y_co+y][x_co+x-2] != 2):
+        new_tetris_array[y_co+y-yy_co][x_co+x-xx_co] = 1
 
-        # print(numpy.array(tetris_array))
-        # print(numpy.array(new_tetris_array))
-        
-        print(f'2{numpy.array(sub_tetris_array_5x5)} - {is_left_shiftable_5x5(sub_tetris_array_5x5)}')
-        return new_tetris_array
+  print(xx_co,yy_co)
+      
+
+  return new_tetris_array
+
 
 pygame.init()
 screen = pygame.display.set_mode((1600,1200),pygame.RESIZABLE)
@@ -434,7 +426,7 @@ key_delay = 1
 
 left_most_x = 0
 right_most_x = 0
-tick_speed = 60
+tick_speed = 60 
 
 while True:
 
@@ -467,31 +459,6 @@ while True:
       if event.key == pygame.K_SPACE:
         pygame.quit()
         exit()
-
-      # move tetris block by one when down arrow is clicked
-
-      #move tetris block to the right
-
-
-    # if event.type == pygame.KEYDOWN:
-    #   if event.key == pygame.K_RIGHT:
-    #       for y in range(19,5,-1):
-    #         if(new_array[y][9] != 1): 
-
-    #           temp = [0,0,0,0,0,0,0,0,0,0]
-            
-    #           for x in range(9,-1,-1):
-                
-    #             if(new_array[y][x] == 1):
-                  
-    #               temp[x+1] = 1
-
-    #             elif new_array[y][x-1] == 0 or new_array[y][x-1] == 2:
-    #               temp[x] = new_array[y][x]
-
-    #           new_array[y] = temp
-
-      #move tetris block to right
 
     def right_allowed(tetris_array):
       for y in range(19,-1,-1):
@@ -595,6 +562,8 @@ while True:
     if event.key == pygame.K_DOWN:
       cooldown -= 1
       new_freezing(new_array)
+  
+  
 
   screen.fill("black")
   
@@ -609,13 +578,14 @@ while True:
     cooldown = delay
     new_freezing(new_array)
     new_falling_logic(new_array)
-
+    top_left_x, top_left_y = determine_top_left_of_ones(new_array) 
 
   eliminate_and_drop_row(new_array)
 
   drawgrid()
 
-  screen_dimension_text_surf = text_font.render(f"width: {w} height: {h}, leftMost: {left_most_x}, rightMost: {right_most_x}, fps:{math.floor(clock.get_fps())}, free_use::D",False,(128,233,0))
+
+  screen_dimension_text_surf = text_font.render(f"top_left_y: {top_left_y}, top_left_x: {top_left_x}",False,(128,233,0))
   screen_dimension_text_rect = screen_dimension_text_surf.get_rect(topleft=(6,0))
   screen.blit(screen_dimension_text_surf,screen_dimension_text_rect)
 
